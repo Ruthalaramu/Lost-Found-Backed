@@ -14,14 +14,14 @@ public class SignUp {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
-    @Column(unique = true)
+   // @Column(unique = true)
     private String mobileNumber;
     private String email;
     private String firstName;
     private String lastName;
     private String password;
-   // private Date createdDate;
-   // private Date lastModifiedDate;
+    private Date createdDate;
+    private Date lastModifiedDate;
     private Boolean isActive;
     private Boolean isAdmin;
 

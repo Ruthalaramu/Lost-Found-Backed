@@ -8,5 +8,6 @@ import lombok.Setter;
 public class SignUpRequestOtp {
     private String mobileNumber;
     private String password;
+    private Boolean isAdmin;
 
 }

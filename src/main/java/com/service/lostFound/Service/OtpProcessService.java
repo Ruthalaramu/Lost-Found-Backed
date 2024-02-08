@@ -37,7 +37,7 @@ public class OtpProcessService {
             System.out.println(otpMap+"size:"+otpMap.size());
             return  signUpResponseOtp = new SignUpResponseOtp(OtpStatus.DELIVERD,otpMessage);
         }catch (Exception e){
-            return  signUpResponseOtp = new SignUpResponseOtp(OtpStatus.DELIVERD,e.getMessage());
+            return  signUpResponseOtp = new SignUpResponseOtp(OtpStatus.FAILED,e.getMessage());
         }
     }
     private  String generateOtp(){

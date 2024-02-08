@@ -1,9 +1,6 @@
 package com.service.lostFound.Controller;
 
 import com.service.lostFound.DTO.SignUpDto;
-import com.service.lostFound.DTO.SignUpRequestOtp;
-import com.service.lostFound.Handler.OtpProcessHandler;
-import com.service.lostFound.Handler.SignUpProcessHandler;
 import com.service.lostFound.Model.SignUp;
 import com.service.lostFound.Repository.SignUpProcessRepository;
 import com.service.lostFound.Service.SignUpProcessService;
@@ -33,7 +30,11 @@ public class SignUpProcessController {
         System.out.println("User Captcha: " + signUpDto.getUserCaptcha());
         System.out.println("Generated Captcha: " + signUpDto.getGeneratedCaptcha());
         System.out.println("mobile:"+signUpDto.getMobileNumber());
-        SignUp SignUp = signUpProcessRepository.findByMobileNumber(signUpDto.getMobileNumber());
+        int isAdmin=0;
+        if(signUpDto!=null && signUpDto.getIsAdmin()){
+            isAdmin=1;
+        }
+        SignUp SignUp = signUpProcessRepository.findByMobileNumber(signUpDto.getMobileNumber(),isAdmin);
         if(SignUp==null){
             if(signUpDto.getUserCaptcha().equals(signUpDto.getGeneratedCaptcha())){
                 return  ResponseEntity.status(HttpStatus.OK).body("user verfied");
@@ -48,7 +49,11 @@ public class SignUpProcessController {
     public ResponseEntity<String> createAccount(@RequestBody SignUpDto signUpDto){
         System.out.println(signUpDto.getMobileNumber());
         System.out.println(signUpDto.getPassword());
-        SignUp SignUp = signUpProcessRepository.findByMobileNumber(signUpDto.getMobileNumber());
+        int isAdmin=0;
+        if(signUpDto!=null && signUpDto.getIsAdmin()){
+            isAdmin=1;
+        }
+        SignUp SignUp = signUpProcessRepository.findByMobileNumber(signUpDto.getMobileNumber(),isAdmin);
         if(SignUp==null ||SignUp.getMobileNumber()==null || SignUp.getMobileNumber().isEmpty()){
             return  signUpProcessService.createAccount(signUpDto);
         }else{
@@ -59,20 +64,66 @@ public class SignUpProcessController {
     @PostMapping("/logIn")
     @CrossOrigin(origins = "http://localhost:3000")
     public ResponseEntity <String> login(@RequestBody SignUp loginRequest){
-        SignUp signUp = signUpProcessRepository.findByMobileNumber(loginRequest.getMobileNumber());
+        int isAdmin=0;
+        if(loginRequest!=null && loginRequest.getIsAdmin()){
+            isAdmin=1;
+        }
+        SignUp signUp = signUpProcessRepository.findByMobileNumber(loginRequest.getMobileNumber(),isAdmin);
         if(signUp!=null){
             if (signUp != null && passwordEncoder.matches(loginRequest.getPassword(), signUp.getPassword())) {
                 // Successfully authenticated
                 return ResponseEntity.ok("Login Successful");
             } else {
                 // Authentication failed
-                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("invalid password");
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("invalid password");
             }
         }else{
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("User Not found please signup first");
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("User Not found please signup first");
         }
 
     }
+
+    @PostMapping("/changePassword")
+    public ResponseEntity<String> forgotPasswordUserCheck(@RequestBody SignUpDto signUpDto ){
+        int isAdmin=0;
+        if(signUpDto!=null && signUpDto.getIsAdmin()){
+             isAdmin=1;
+        }
+        SignUp SignUp = signUpProcessRepository.findByMobileNumber(signUpDto.getMobileNumber(),isAdmin);
+        if(SignUp!=null){
+            if(signUpDto.getPassword()!=null && !signUpDto.getPassword().isEmpty()){
+                SignUp.setPassword(passwordEncoder.encode(signUpDto.getPassword()));
+                SignUp updateSignUp  = signUpProcessRepository.save(SignUp);
+                return  new ResponseEntity<>("password changed", HttpStatus.CREATED);
+            }else{
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Data Not avilable");
+            }
+
+        }else {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("user not found");
+        }
+
+    }
+//    @PostMapping("/changePassword")
+//    public ResponseEntity<String> updatePassword(@RequestBody SignUpDto signUpDto ){
+//        try{
+//            SignUp SignUp = signUpProcessRepository.findByMobileNumber(signUpDto.getMobileNumber());
+//            if(SignUp!=null){
+//                if(signUpDto.getPassword()!=null && !signUpDto.getPassword().isEmpty()){
+//                    SignUp.setPassword(passwordEncoder.encode(signUpDto.getPassword()));
+//                    SignUp updateSignUp  = signUpProcessRepository.save(SignUp);
+//                    return  new ResponseEntity<>("password changed", HttpStatus.CREATED);
+//                }else{
+//                    return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Data Not avilable");
+//                }
+//
+//            }
+//        }catch (Exception e){
+//            e.printStackTrace();
+//        }
+//
+//        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("updation fail");
+//    }
 
 }
 

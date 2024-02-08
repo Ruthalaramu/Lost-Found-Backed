@@ -14,4 +14,5 @@ public class SignUpDto {
     private String lastName;
     private String userCaptcha;
     private String generatedCaptcha;
+    private Boolean isAdmin;
 }

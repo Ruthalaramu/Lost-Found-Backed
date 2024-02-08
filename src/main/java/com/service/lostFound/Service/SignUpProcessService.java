@@ -5,12 +5,14 @@ import com.service.lostFound.DTO.SignUpRequestOtp;
 import com.service.lostFound.Model.SignUp;
 import com.service.lostFound.Repository.SignUpProcessRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.auditing.CurrentDateTimeProvider;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.text.DecimalFormat;
+import java.util.Date;
 import java.util.Random;
 
 @Service
@@ -32,7 +34,11 @@ public class SignUpProcessService {
             signUp.setLastName(signUpDto.getLastName());
             signUp.setPassword(passwordEncoder.encode(signUpDto.getPassword()));
             signUp.setIsActive(Boolean.TRUE);
-            signUp.setIsAdmin(Boolean.TRUE);
+            if(signUpDto.getIsAdmin()) {
+                signUp.setIsAdmin(Boolean.TRUE);
+            }else{
+                signUp.setIsAdmin(Boolean.FALSE);
+            }
             signUpProcessRepository.save(signUp);
             return  new ResponseEntity<>("sucessfully saved", HttpStatus.CREATED);
 

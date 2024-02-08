@@ -48,7 +48,11 @@ public class OtpProcessController {
     }
     @PostMapping("/logInRequestValidation")
     public  ResponseEntity<String> validationRequestOtp(@RequestBody SignUpRequestOtp signUpRequestOtp){
-        SignUp SignUp = signUpProcessRepository.findByMobileNumber(signUpRequestOtp.getMobileNumber());
+        int isAdmin=0;
+        if(signUpRequestOtp!=null && signUpRequestOtp.getIsAdmin()){
+            isAdmin=1;
+        }
+        SignUp SignUp = signUpProcessRepository.findByMobileNumber(signUpRequestOtp.getMobileNumber(),isAdmin);
         if(SignUp!=null){
             if(passwordEncoder.matches(signUpRequestOtp.getPassword(), SignUp.getPassword())){
                 //SignUpResponseOtp signUpResponseOtp= otpProcessService.sendingOtp(signUpRequestOtp) ;
@@ -58,7 +62,6 @@ public class OtpProcessController {
 //                }else{
 //                    return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("otp sending Fail");
 //                }
-
             }else{
                 return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("incorrect password");
             }
