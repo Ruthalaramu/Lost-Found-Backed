@@ -12,7 +12,7 @@ public class CorsConfig implements WebMvcConfigurer {
     public void addCorsMappings(CorsRegistry registry) {
         registry.addMapping("/**")
                 //.allowedOrigins("http://localhost:3000") // Replace with your frontend URL
-                .allowedOrigins("https://lostfound-six.vercel.app")
+                .allowedOrigins("https://lost-found-front-hrq8z682j-ramus-projects-1a4d2c2b.vercel.app")
 
                 .allowedMethods("GET", "POST", "PUT", "DELETE")
                 .allowedHeaders("*")
