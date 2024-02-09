@@ -14,7 +14,7 @@ public class SignUp {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
-   // @Column(unique = true)
+    @Column(unique = true)
     private String mobileNumber;
     private String email;
     private String firstName;

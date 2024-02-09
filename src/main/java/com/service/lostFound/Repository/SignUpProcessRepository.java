@@ -10,6 +10,6 @@ import java.util.List;
 @Repository
 public interface SignUpProcessRepository  extends JpaRepository<SignUp,Integer> {
 
-    @Query(value = "select * from  user where mobile_number=:mobileNumber and is_admin=:isAdmin and is_active=1",nativeQuery=true)
-    SignUp findByMobileNumber(String mobileNumber,int isAdmin);
+    @Query(value = "select * from  user where mobile_number=:mobileNumber  and is_active=1",nativeQuery=true)
+    SignUp findByMobileNumber(String mobileNumber);
 }

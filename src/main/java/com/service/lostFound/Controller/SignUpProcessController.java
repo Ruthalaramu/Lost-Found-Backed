@@ -12,7 +12,6 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/signUpProcess")
-@CrossOrigin(origins = "http://localhost:3000")
 public class SignUpProcessController {
 
     public SignUpProcessController() {
@@ -24,17 +23,12 @@ public class SignUpProcessController {
     private  SignUpProcessService signUpProcessService;
     @Autowired
     private BCryptPasswordEncoder passwordEncoder;
-    @CrossOrigin(origins = "http://localhost:3000")
     @PostMapping("/validationCheck")
     public  ResponseEntity<String> validationCheck(@RequestBody SignUpDto signUpDto){
         System.out.println("User Captcha: " + signUpDto.getUserCaptcha());
         System.out.println("Generated Captcha: " + signUpDto.getGeneratedCaptcha());
         System.out.println("mobile:"+signUpDto.getMobileNumber());
-        int isAdmin=0;
-        if(signUpDto!=null && signUpDto.getIsAdmin()){
-            isAdmin=1;
-        }
-        SignUp SignUp = signUpProcessRepository.findByMobileNumber(signUpDto.getMobileNumber(),isAdmin);
+        SignUp SignUp = signUpProcessRepository.findByMobileNumber(signUpDto.getMobileNumber());
         if(SignUp==null){
             if(signUpDto.getUserCaptcha().equals(signUpDto.getGeneratedCaptcha())){
                 return  ResponseEntity.status(HttpStatus.OK).body("user verfied");
@@ -53,7 +47,7 @@ public class SignUpProcessController {
         if(signUpDto!=null && signUpDto.getIsAdmin()){
             isAdmin=1;
         }
-        SignUp SignUp = signUpProcessRepository.findByMobileNumber(signUpDto.getMobileNumber(),isAdmin);
+        SignUp SignUp = signUpProcessRepository.findByMobileNumber(signUpDto.getMobileNumber());
         if(SignUp==null ||SignUp.getMobileNumber()==null || SignUp.getMobileNumber().isEmpty()){
             return  signUpProcessService.createAccount(signUpDto);
         }else{
@@ -62,13 +56,12 @@ public class SignUpProcessController {
 
     }
     @PostMapping("/logIn")
-    @CrossOrigin(origins = "http://localhost:3000")
     public ResponseEntity <String> login(@RequestBody SignUp loginRequest){
         int isAdmin=0;
         if(loginRequest!=null && loginRequest.getIsAdmin()){
             isAdmin=1;
         }
-        SignUp signUp = signUpProcessRepository.findByMobileNumber(loginRequest.getMobileNumber(),isAdmin);
+        SignUp signUp = signUpProcessRepository.findByMobileNumber(loginRequest.getMobileNumber());
         if(signUp!=null){
             if (signUp != null && passwordEncoder.matches(loginRequest.getPassword(), signUp.getPassword())) {
                 // Successfully authenticated
@@ -89,7 +82,7 @@ public class SignUpProcessController {
         if(signUpDto!=null && signUpDto.getIsAdmin()){
              isAdmin=1;
         }
-        SignUp SignUp = signUpProcessRepository.findByMobileNumber(signUpDto.getMobileNumber(),isAdmin);
+        SignUp SignUp = signUpProcessRepository.findByMobileNumber(signUpDto.getMobileNumber());
         if(SignUp!=null){
             if(signUpDto.getPassword()!=null && !signUpDto.getPassword().isEmpty()){
                 SignUp.setPassword(passwordEncoder.encode(signUpDto.getPassword()));

@@ -52,7 +52,7 @@ public class OtpProcessController {
         if(signUpRequestOtp!=null && signUpRequestOtp.getIsAdmin()){
             isAdmin=1;
         }
-        SignUp SignUp = signUpProcessRepository.findByMobileNumber(signUpRequestOtp.getMobileNumber(),isAdmin);
+        SignUp SignUp = signUpProcessRepository.findByMobileNumber(signUpRequestOtp.getMobileNumber());
         if(SignUp!=null){
             if(passwordEncoder.matches(signUpRequestOtp.getPassword(), SignUp.getPassword())){
                 //SignUpResponseOtp signUpResponseOtp= otpProcessService.sendingOtp(signUpRequestOtp) ;
