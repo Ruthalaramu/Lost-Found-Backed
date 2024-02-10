@@ -24,18 +24,22 @@ public class OtpProcessService {
 
     public SignUpResponseOtp sendingOtp(SignUpRequestOtp signUpRequestOtp) {
 
-        SignUpResponseOtp signUpResponseOtp=null;
+        SignUpResponseOtp signUpResponseOtp= new SignUpResponseOtp();
         try{
-            PhoneNumber to= new PhoneNumber(signUpRequestOtp.getMobileNumber())  ;
+            PhoneNumber to= new PhoneNumber("+91"+signUpRequestOtp.getMobileNumber())  ;
             PhoneNumber from = new PhoneNumber(twilioConfig.getTrailNumber());
             String otp= generateOtp();
             System.out.println(otp);
             OtpData otpData = new OtpData(otp, System.currentTimeMillis());
-            String  otpMessage="Here is the otp for sign-Up verification:"+otp;
-            //Message message = Message.creator(to, from, otpMessage).create();
-            otpMap.put(signUpRequestOtp.getMobileNumber(),otpData);
-            System.out.println(otpMap+"size:"+otpMap.size());
-            return  signUpResponseOtp = new SignUpResponseOtp(OtpStatus.DELIVERD,otpMessage);
+            String  otpMessage="Welcome to the Lost&Found Services use this OTP for Sign-Up verification :"+otp;
+            Message message = Message.creator(to, from, otpMessage).create();
+            if( message.getBody()!=null && !message.getBody().isEmpty()){
+                signUpResponseOtp.setMessage(otpMessage);
+                signUpResponseOtp.setStatus(OtpStatus.DELIVERD);
+                otpMap.put(signUpRequestOtp.getMobileNumber(),otpData);
+                System.out.println(otpMap+"size:"+otpMap.size());
+            }
+            return  signUpResponseOtp ;
         }catch (Exception e){
             return  signUpResponseOtp = new SignUpResponseOtp(OtpStatus.FAILED,e.getMessage());
         }
@@ -59,6 +63,27 @@ public class OtpProcessService {
             }
         }
     }
+
+    public SignUpResponseOtp sendSmsToSignUpUser(String mobileNumber) {
+        SignUpResponseOtp signUpResponseOtp;
+        try {
+            signUpResponseOtp = new SignUpResponseOtp();
+            PhoneNumber to = new PhoneNumber("+91" + mobileNumber);
+            PhoneNumber from = new PhoneNumber(twilioConfig.getTrailNumber());
+            String otpMessage = "Thank you for using Lost&Found Services your account successfully created with us.";
+            Message message = Message.creator(to, from, otpMessage).create();
+            if (message.getBody() != null && !message.getBody().isEmpty()) {
+                signUpResponseOtp.setStatus(OtpStatus.DELIVERD);
+                signUpResponseOtp.setMessage("sent SMS");
+            }
+            return signUpResponseOtp;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return signUpResponseOtp = new SignUpResponseOtp(OtpStatus.FAILED, e.getMessage());
+        }
+
+    }
+
     private static class OtpData {
         private final String otp;
         private final long creationTime;

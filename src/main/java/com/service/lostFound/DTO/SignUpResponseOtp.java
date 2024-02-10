@@ -13,4 +13,8 @@ public class SignUpResponseOtp {
 
     public SignUpResponseOtp(OtpStatus otpStatus, String otpMessage) {
     }
+
+    public SignUpResponseOtp() {
+
+    }
 }

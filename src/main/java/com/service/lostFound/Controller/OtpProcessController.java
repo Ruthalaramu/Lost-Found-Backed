@@ -36,15 +36,24 @@ public class OtpProcessController {
 
 
     @PostMapping("/sendOtp")
-    public ResponseEntity<String> sendOtp(@RequestBody SignUpRequestOtp signUpRequestOtp){
+    public ResponseEntity<SignUpResponseOtp> sendOtp(@RequestBody SignUpRequestOtp signUpRequestOtp){
         SignUpResponseOtp signUpResponseOtp= otpProcessService.sendingOtp(signUpRequestOtp) ;
         if(signUpResponseOtp!=null){
-            return ResponseEntity.status(HttpStatus.OK).body("otp success");
+            return ResponseEntity.status(HttpStatus.OK).body(signUpResponseOtp);
         }else{
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("failed");
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
 
         }
 
+    }
+    @PostMapping("/SignUpSuccess")
+    public ResponseEntity<String> signUpSucess(@RequestBody SignUpRequestOtp signUpRequestOtp){
+        SignUpResponseOtp sendSmsSignUpUser=otpProcessService.sendSmsToSignUpUser(signUpRequestOtp.getMobileNumber());
+        if(sendSmsSignUpUser!=null){
+            return ResponseEntity.status(HttpStatus.OK).body("SMS send to user");
+        }else{
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("sending SMS fail");
+        }
     }
     @PostMapping("/logInRequestValidation")
     public  ResponseEntity<String> validationRequestOtp(@RequestBody SignUpRequestOtp signUpRequestOtp){
