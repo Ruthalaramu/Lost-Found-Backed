@@ -24,7 +24,7 @@ public class SignUp {
     private Date lastModifiedDate;
     @Column(name = "is_active", columnDefinition = "TINYINT(1)")
     private Boolean isActive;
-    @Column(name = "is_active", columnDefinition = "TINYINT(1)")
+    @Column(name = "is_admin", columnDefinition = "TINYINT(1)")
     private Boolean isAdmin;
 
 
