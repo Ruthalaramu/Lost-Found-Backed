@@ -22,7 +22,9 @@ public class SignUp {
     private String password;
     private Date createdDate;
     private Date lastModifiedDate;
+    @Column(name = "is_active", columnDefinition = "TINYINT(1)")
     private Boolean isActive;
+    @Column(name = "is_active", columnDefinition = "TINYINT(1)")
     private Boolean isAdmin;
 
 
