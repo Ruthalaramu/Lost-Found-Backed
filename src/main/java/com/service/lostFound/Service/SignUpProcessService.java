@@ -12,6 +12,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.text.DecimalFormat;
+import java.time.LocalDate;
 import java.util.Date;
 import java.util.Random;
 
@@ -34,6 +35,7 @@ public class SignUpProcessService {
             signUp.setLastName(signUpDto.getLastName());
             signUp.setPassword(passwordEncoder.encode(signUpDto.getPassword()));
             signUp.setIsActive(Boolean.TRUE);
+            LocalDate today = LocalDate.now();
             if(signUpDto.getIsAdmin()) {
                 signUp.setIsAdmin(Boolean.TRUE);
             }else{
